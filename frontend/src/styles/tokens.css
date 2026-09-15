@@ -1,0 +1,29 @@
+:root {
+  --color-gold: #ca8a04;
+  --color-gold-hover: #b8780a;
+  --color-gold-border: #daa520;
+  --color-red: #991b1b;
+  --color-purple: #581c87;
+  --color-bg: #1a0f0a;
+  --color-surface: #2c1a10;
+  --color-surface-elevated: #3d2517;
+  --color-border: #5c3d2e;
+  --color-parchment: #f5e6d3;
+  --color-muted: #bfa98a;
+  --font-display: "Cinzel", serif;
+  --font-body: "Spectral", serif;
+  --font-mono: "Fira Code", monospace;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --radius: 4px;
+  --shadow-sm: 1px 1px 3px rgb(202 138 4 / 15%);
+  --shadow-card: 2px 2px 8px rgb(202 138 4 / 20%);
+  --shadow-glow: 0 0 20px rgb(202 138 4 / 40%);
+  --shadow-focus: 0 0 0 3px rgb(202 138 4 / 25%);
+  --duration: 300ms;
+}
