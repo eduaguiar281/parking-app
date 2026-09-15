@@ -1,0 +1,28 @@
+openapi: 3.0.3
+info:
+  title: Parking App — sinal de vida
+  description: Único endereço público da fundação. Sem autenticação e sem regra de estacionamento.
+  version: 0.1.0
+servers:
+  - url: http://localhost:5080
+    description: Desenvolvimento local (launchSettings)
+paths:
+  /alive:
+    get:
+      operationId: getAlive
+      summary: Confirma que o serviço está no ar
+      security: []
+      responses:
+        "200":
+          description: Serviço em execução
+          content:
+            text/plain:
+              schema:
+                type: string
+                enum:
+                  - estou vivo
+              example: estou vivo
+        "4XX":
+          description: Não aplicável nesta feature (sem auth nem validação de entrada)
+        "5XX":
+          description: Falha do processo; o colega não deve interpretar como “estou vivo”
