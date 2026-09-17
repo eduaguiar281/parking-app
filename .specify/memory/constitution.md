@@ -1,13 +1,17 @@
 <!--
 Relatório de impacto de sincronização
-- Mudança de versão: 1.1.0 → 1.2.0
+- Mudança de versão: 1.2.0 → 1.3.0
 - Princípios modificados: nenhum redefinido
 - Seções adicionadas/expandidas:
-  - Fluxo de desenvolvimento: Trunk-Based Development, commits
-    Conventional Commits, PRs semânticos, fatia vertical
-    Domain/Application/Infrastructure, rastreamento de complexidade
+  - V. Ortogonalidade: verificação de persistência vs. domínio
+  - Precedência: recorte D/A/I não é arquitetura extra; YAGNI
+    não autoriza I/O no tipo da regra
+  - Fluxo: andaime vazio ≠ fatia sem Domain/Application/Infrastructure
+  - Gate do Constitution Check em `/speckit-plan`
 - Seções removidas: nenhuma
-- TODOs de acompanhamento: nenhum
+- TODOs de acompanhamento: o plano e o código de
+  `002-controle-estacionamento` misturam JSON em `ParkingLot` —
+  não conformes até recortar persistência para Infrastructure
 -->
 
 # Constituição do Parking App
@@ -94,6 +98,16 @@ inteiro.
 Verificação: alterar a funcionalidade A NÃO DEVE exigir edição na
 funcionalidade B, a menos que o contrato de B dependa explicitamente de A.
 
+Além disso, quando a spec tiver regra de negócio persistida (ex.: pátio que
+sobrevive a restart):
+
+- O tipo que decide placa, vaga, estadia ou tarifa NÃO DEVE ler nem gravar
+  arquivo, banco, HTTP ou UI.
+- Persistência DEVE viver em Infrastructure da mesma fatia.
+- Teste da regra de domínio DEVE passar sem disco, rede ou host HTTP.
+- Trocar a forma de guardar (arquivo ↔ outro meio) NÃO DEVE exigir edição
+  nesses tipos de regra.
+
 ### VI. SOLID
 
 DEVE aplicar SOLID onde isso reduz acoplamento e esclarece dono da mudança,
@@ -159,10 +173,21 @@ Regras de resolução:
 4. SOLID só se aplica depois que YAGNI, KISS e DRY estiverem satisfeitos.
 
 Clean Code e Ortogonalidade são restrições permanentes: DEVEM ser aplicadas em
-toda mudança. NÃO DEVEM ser usadas para justificar arquitetura extra que YAGNI
-ou KISS rejeitariam. Se um desenho mais limpo ou mais ortogonal exigir
-comportamento fora da spec, YAGNI ainda vence — simplificar dentro do escopo
-atual.
+toda mudança.
+
+Recortar Domain (regra), Application (caso de uso), Infrastructure (I/O) e API
+(transporte) NÃO É arquitetura extra. É o mínimo da Ortogonalidade quando a
+spec tem regra de negócio.
+
+Arquitetura extra (YAGNI/KISS rejeitam): segundo meio de persistência sem
+pedido, interface/repositório genérico com uma só implementação, três
+projetos Domain/Application/Infrastructure, EF/banco que a spec não pediu.
+
+YAGNI vence interface sem variação real. YAGNI NÃO vence colar
+armazenamento, HTTP ou UI no tipo que contém a regra.
+
+Se um desenho mais ortogonal exigir comportamento fora da spec (tela, campo,
+endpoint a mais), YAGNI ainda vence — recortar dentro do escopo atual.
 
 Qualquer exceção a esta ordem DEVE ser documentada na spec ou no plano, com o
 princípio sobrescrito e o motivo.
@@ -197,6 +222,19 @@ filtro padrão de desenho:
 - Revisores DEVEM recusar mudanças que adicionem abstração sem uso, violem a
   precedência ou sejam entregues sem os testes exigidos.
 
+O Constitution Check de `/speckit-plan` SÓ PODE marcar Ortogonalidade como
+Pass se:
+
+1. A regra de domínio for testável sem I/O.
+2. Persistência exigida pela spec tiver dono em Infrastructure (não no tipo
+   de regra).
+3. Não houver pasta/projeto Domain/Application/Infrastructure sem
+   comportamento nesta spec.
+
+Se o plano misturar persistência na regra, o gate FALHA. Simplificar o
+desenho ou registrar exceção na tabela de complexidade, com o princípio
+sobrescrito e o motivo.
+
 O Git DEVE seguir Trunk-Based Development. `main` é o trunk. Os branches DEVEM
 ser de vida curta e voltar ao trunk rápido. Branches longos de funcionalidade
 NÃO SÃO permitidos.
@@ -212,9 +250,22 @@ Os pull requests DEVEM ser semânticos: o título DEVE seguir Conventional
 Commits. O corpo DEVE descrever o que mudou e por quê. Um PR sem essa
 descrição NÃO DEVE ser mesclado.
 
-Mudanças de Domain, Application e Infrastructure da mesma fatia DEVEM entrar
-juntas no mesmo branch curto. Andaime de design NÃO DEVE ser separado em um PR
-só de “design”, a menos que tenha especificação própria.
+Quando a spec da feature NÃO tiver regra de negócio, NÃO DEVEM ser criadas
+pastas ou projetos vazios de Domain, Application ou Infrastructure (YAGNI).
+
+Quando a spec TIVER regra de negócio, a implementação DEVE entregar a fatia
+já recortada no mesmo branch curto e no mesmo projeto de aplicação:
+
+- Domain: regras e invariantes, sem I/O
+- Application: casos de uso (orquestra Domain + persistência)
+- Infrastructure: armazenamento e detalhes de I/O
+- API/UI: transporte e tela
+
+Isso NÃO exige três assemblies. Pastas (ou tipos claramente donos de uma
+preocupação) no csproj/app existentes bastam.
+
+Andaime de design NÃO DEVE ser um PR separado só de pastas vazias, a menos
+que tenha especificação própria.
 
 Pull requests e verificações desta constitution DEVEM validar estes princípios.
 Complexidade sem justificativa DEVE ser registrada na tabela de rastreamento de
@@ -250,4 +301,4 @@ Conformidade:
 - A precedência (YAGNI > KISS > DRY > SOLID) é o desempate; argumentos que a
   invertam sem emenda são não conformes.
 
-**Versão**: 1.2.0 | **Ratificada**: 2026-09-15 | **Última alteração**: 2026-09-15
+**Versão**: 1.3.0 | **Ratificada**: 2026-09-15 | **Última alteração**: 2026-09-17
