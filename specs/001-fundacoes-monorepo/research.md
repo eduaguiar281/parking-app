@@ -34,18 +34,18 @@
 - Jest — segunda toolchain ao lado do Vite.
 - JSX sem TypeScript — foge do template oficial e gera retrabalho.
 
-## 4. Aparência (QuestUI)
+## 4. Aparência (DESIGN.md)
 
-**Decision:** `frontend/DESIGN.md` em pt-BR é a fonte humana. `frontend/src/styles/tokens.css` copia os tokens (cores, tipo, espaço, raio, sombra). A vitrine vive em `App.tsx` com HTML semântico (`h1`, `article`, `button`, `input`) e classes CSS. Sem biblioteca de componentes, sem Tailwind.
+**Decision:** `frontend/DESIGN.md` é a fonte humana. `frontend/src/styles/tokens.css` copia os tokens (cores, tipo, espaço, raio, sombra). A vitrine vive em `App.tsx` com HTML semântico (`h1`, `article`, `button`, `input`) e classes CSS. Sem biblioteca de componentes, sem Tailwind. Substituição de fonte: `system-ui` / `-apple-system` com Inter (Google Fonts) para plataformas sem SF Pro.
 
-**Rationale:** A spec pede quatro elementos, não um design system implementado. Tailwind empurra visual “flat” que o QuestUI proíbe. Gerar CSS a partir do markdown seria automação sem pedido. Duplicar hex no DESIGN.md e no CSS é similaridade acidental aceitável (constitution DRY).
+**Rationale:** A spec pede quatro elementos, não um design system implementado. Tailwind e paletas com segundo acento violam o DESIGN.md (um único Action Blue, sem sombra em chrome). Gerar CSS a partir do markdown seria automação sem pedido. Duplicar hex no DESIGN.md e no CSS é similaridade acidental aceitável (constitution DRY).
 
 **Alternatives considered:**
-- Tailwind / shadcn — conflito com o tom ornamental.
+- Tailwind / shadcn — segundo acento e sombras de chrome que o DESIGN.md proíbe.
 - Quatro arquivos de componente + Storybook — catálogo que a spec proibiu.
 - CSS-in-JS — dependência extra.
 
-Fontes: Cinzel, Spectral e Fira Code via Google Fonts no `index.html`.
+Fontes: Inter via Google Fonts no `index.html`, com stack `system-ui, -apple-system, BlinkMacSystemFont`.
 
 ## 5. Monorepo e pastas
 

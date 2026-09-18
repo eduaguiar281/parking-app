@@ -9,9 +9,7 @@ Relatório de impacto de sincronização
   - Fluxo: andaime vazio ≠ fatia sem Domain/Application/Infrastructure
   - Gate do Constitution Check em `/speckit-plan`
 - Seções removidas: nenhuma
-- TODOs de acompanhamento: o plano e o código de
-  `002-controle-estacionamento` misturam JSON em `ParkingLot` —
-  não conformes até recortar persistência para Infrastructure
+- TODOs de acompanhamento: nenhum
 -->
 
 # Constituição do Parking App

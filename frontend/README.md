@@ -1,6 +1,6 @@
 # Frontend — Parking App
 
-Interface da fundação do Parking App. Vitrine da identidade visual QuestUI. **Não consulta o backend.**
+Interface da fundação do Parking App. Vitrine da identidade visual descrita em `DESIGN.md`. **Não consulta o backend.**
 
 ## Stack
 

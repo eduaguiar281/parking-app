@@ -22,9 +22,9 @@ Estado visual da tela inicial. Não é gravado.
 
 | Campo | Tipo | Regras |
 |-------|------|--------|
-| titulo | texto visível | pt-BR, tipografia Cinzel |
-| card | conteúdo do card | pt-BR, superfície QuestUI |
-| botao | rótulo | pt-BR; estados visuais CSS (hover/foco/desabilitado) permitidos |
+| titulo | texto visível | pt-BR, `{typography.hero-display}` |
+| card | conteúdo do card | pt-BR, `{component.store-utility-card}` em `{colors.canvas-parchment}` |
+| botao | rótulo | pt-BR; estados visuais CSS (foco/pressionado/desabilitado) permitidos |
 | campo | valor local do input | opcional; some ao recarregar; não envia a lugar nenhum |
 
 - **Identidade:** uma única tela, sem rotas extras nesta feature.
@@ -37,7 +37,7 @@ Documentadas na spec; não viram tabelas.
 
 - **Projeto backend:** `backend/` com `src/`, `tests/`, `README.md`.
 - **Projeto frontend:** `frontend/` com `src/`, `tests/`, `README.md`, `DESIGN.md`.
-- **Sistema de design:** `frontend/DESIGN.md` (tokens QuestUI em pt-BR).
+- **Sistema de design:** `frontend/DESIGN.md` (tokens visuais da vitrine).
 
 ## Validação
 

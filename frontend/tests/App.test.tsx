@@ -16,8 +16,8 @@ describe("render_vitrineInicial_exibeTituloCardBotaoECampo", () => {
       "Parking App",
     );
     expect(screen.getByRole("article")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Confirmar" })).toBeInTheDocument();
-    expect(screen.getByRole("textbox", { name: "Nome do arauto" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Saiba mais" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Pesquisar" })).toBeInTheDocument();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 });

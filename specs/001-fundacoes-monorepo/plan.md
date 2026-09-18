@@ -8,7 +8,7 @@
 
 ## Summary
 
-Criar a fundação do Parking App como monorepo de dois projetos irmãos: serviço .NET 10 com um `GET /alive` (`estou vivo`) e interface React 19.3 (Vite) com vitrine QuestUI (título, card, botão, campo), sem os dois se falarem. Cada lado tem README em pt-BR, testes em `tests/` com 80% de linhas e nomes `<método>_<cenário>_<resultado esperado>`. Código em inglês.
+Criar a fundação do Parking App como monorepo de dois projetos irmãos: serviço .NET 10 com um `GET /alive` (`estou vivo`) e interface React 19.3 (Vite) com vitrine do DESIGN.md (título, card, botão, campo), sem os dois se falarem. Cada lado tem README em pt-BR, testes em `tests/` com 80% de linhas e nomes `<método>_<cenário>_<resultado esperado>`. Código em inglês.
 
 Detalhes em [research.md](./research.md).
 
@@ -16,7 +16,7 @@ Detalhes em [research.md](./research.md).
 
 **Language/Version**: C# / SDK .NET 10; TypeScript + React 19.3; Node.js 20.19+ ou 22 LTS
 
-**Primary Dependencies**: ASP.NET Core Minimal APIs; xUnit; Microsoft.AspNetCore.Mvc.Testing; Coverlet; Vite; Vitest; Testing Library; CSS nativo (tokens QuestUI)
+**Primary Dependencies**: ASP.NET Core Minimal APIs; xUnit; Microsoft.AspNetCore.Mvc.Testing; Coverlet; Vite; Vitest; Testing Library; CSS nativo (tokens do DESIGN.md)
 
 **Storage**: N/A (nada persistido)
 

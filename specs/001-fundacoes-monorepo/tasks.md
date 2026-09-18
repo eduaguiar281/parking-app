@@ -87,7 +87,7 @@ description: "Lista de tarefas da fundação do monorepo"
 
 ## Phase 5: User Story 3 - Interface com identidade visual documentada (Priority: P1)
 
-**Goal**: SPA React 19.3 com DESIGN.md QuestUI e vitrine (título, card, botão, campo), sem chamar o backend.
+**Goal**: SPA React 19.3 com DESIGN.md e vitrine (título, card, botão, campo), sem chamar o backend.
 
 **Independent Test**: Backend desligado → `cd frontend && npm test && npm run dev` → `http://localhost:5173` mostra os quatro elementos (SC-004, SC-005).
 
@@ -187,7 +187,7 @@ Task: "Carregar fontes em frontend/index.html"
 1. Setup + Foundational → projetos compilam
 2. US1 → navegação documentada (MVP)
 3. US2 → `GET /alive` (demo do serviço)
-4. US3 → vitrine QuestUI (demo da interface)
+4. US3 → vitrine do DESIGN.md (demo da interface)
 5. Phase 6 → quickstart.md
 
 ### Parallel Team Strategy

@@ -33,5 +33,5 @@
 
 - Plataformas nomeadas (.NET 10, React 19.3, pastas `backend/` e `frontend/`) são restrições explícitas do pedido desta feature de fundação, não desenho inventado de uma regra de estacionamento. Os critérios de sucesso (SC-001 a SC-005) permanecem mensuráveis sem citar framework.
 - O público desta spec é o time que vai construir o produto; histórias descrevem o membro da equipe como ator.
-- QuestUI entra como identidade visual obrigatória via `frontend/DESIGN.md` (especificação própria de aparência, alinhada à constitution).
+- `frontend/DESIGN.md` entra como identidade visual obrigatória (especificação própria de aparência, alinhada à constitution).
 - Itens incompletos exigiriam atualização da spec antes de `/speckit-clarify` ou `/speckit-plan`. Nenhum item ficou incompleto.

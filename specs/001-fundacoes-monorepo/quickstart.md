@@ -48,7 +48,7 @@ Abrir `http://localhost:5173` **com o backend desligado**.
 
 **Esperado:**
 - Testes passam; cobertura de linhas ≥ 80%.
-- Título, card, botão e campo em pt-BR no visual QuestUI.
+- Título, card, botão e campo em pt-BR no visual do DESIGN.md.
 - Nenhuma chamada de rede ao serviço.
 - Revisor marca ≥ 8 regras do/don’t aplicáveis (SC-004).
 
