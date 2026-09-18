@@ -4,11 +4,16 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: {
+      "/api": "http://localhost:5080",
+    },
+  },
   test: {
     environment: "jsdom",
     globals: true,
     setupFiles: ["./tests/setup.ts"],
-    include: ["tests/**/*.test.tsx"],
+    include: ["tests/**/*.test.tsx", "tests/**/*.test.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],

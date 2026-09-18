@@ -87,7 +87,8 @@ O operador ou o administrador abre o caixa do dia operacional com valor de abert
 2. **Given** já existe um caixa aberto (da mesma data ou de data anterior), **When** alguém tenta abrir outro, **Then** a abertura é recusada até o caixa atual ser fechado.
 3. **Given** um caixa aberto, **When** um administrador registra sangria, suprimento ou ajuste com valor e motivo, **Then** a movimentação entra no caixa com data, hora e responsável, e os totais são atualizados.
 4. **Given** um caixa aberto com movimentações, **When** o responsável fecha informando o valor de fechamento e observações, **Then** o sistema grava valor esperado (abertura + receitas de saídas + suprimentos − sangrias ± ajustes), valor informado, diferença, data, hora e responsável, e impede novos pagamentos nesse caixa.
-5. **Given** um caixa fechado, **When** um operador tenta reabrir ou alterar movimentações, **Then** a ação é recusada; um administrador pode reabrir somente informando motivo, com registro de auditoria.
+5. **Given** um caixa fechado, **When** um operador tenta reabrir ou alterar movimentações, **Then** a ação é recusada.
+6. **Given** um caixa fechado, **When** um administrador tenta editar uma receita de saída, **Then** a alteração é recusada; ele só reabre com motivo e lança sangria, suprimento ou ajuste.
 
 ---
 
@@ -228,7 +229,7 @@ O administrador consulta o rastro de ações relevantes: mudanças cadastrais, c
 - Saída sem caixa aberto: recusada.
 - Qualquer tentativa de abrir um segundo caixa enquanto outro está aberto (mesma data ou data diferente): recusada até o atual ser fechado.
 - Fechamento com diferença entre esperado e informado: permitido; a diferença é gravada e visível. O esperado é abertura + receitas de saídas pagas + suprimentos − sangrias ± ajustes.
-- Movimentação em caixa já fechado: recusada para operador; administrador só altera com auditoria.
+- Movimentação em caixa já fechado: recusada para todos. Administrador reabre com motivo e lança sangria, suprimento ou ajuste; não edita receita de saída.
 - Reabertura de caixa por operador: recusada.
 - Usuário inativo ou senha inválida: não entra.
 - Operador acessando endereço administrativo: recusado, sem executar a ação.
@@ -252,7 +253,7 @@ O administrador consulta o rastro de ações relevantes: mudanças cadastrais, c
 - **FR-004**: A navegação principal DEVE oferecer: Operação, Vagas, Tarifas, Caixa, Histórico, Relatórios e Usuários, exibindo a cada perfil somente o que ele pode usar.
 - **FR-005**: A interface DEVE ser utilizável em desktop, tablet e celular, sem omitir as ações essenciais de cada perfil.
 - **FR-006**: Ações sensíveis (saída e pagamento, fechamento de caixa, alteração de tarifa, reabertura de caixa, cancelamento de atendimento) DEVEM exigir confirmação explícita antes de concluir.
-- **FR-007**: O sistema DEVE exibir mensagens de erro e de sucesso claras, estados vazios informativos e identificação visível quando os dados forem de demonstração.
+- **FR-007**: O sistema DEVE exibir mensagens de erro e de sucesso na própria interface (não só no transporte). Estados vazios DEVEM ser informativos. Esta feature NÃO semeia pátio de demonstração; se no futuro houver dados de treino, DEVEM trazer o prefixo visível “Demonstração”.
 - **FR-008**: Indicadores visuais DEVEM distinguir vagas livres, ocupadas, bloqueadas e em manutenção.
 
 #### Autenticação e permissões
@@ -264,7 +265,7 @@ O administrador consulta o rastro de ações relevantes: mudanças cadastrais, c
 - **FR-013**: O perfil Operador DEVE poder usar painel, entrada, saída e pagamento, abrir e fechar caixa, consultar movimentações do caixa e consultar histórico operacional. NÃO DEVE gerir setores, vagas, tarifas ou usuários; NÃO DEVE emitir relatórios completos; NÃO DEVE registrar sangria, suprimento ou ajuste; NÃO DEVE reabrir caixa; NÃO DEVE consultar auditoria.
 - **FR-014**: Apenas administradores DEVEM criar, editar, inativar ou reativar usuários.
 - **FR-015**: Toda ação operacional e administrativa DEVE registrar o usuário responsável.
-- **FR-016**: Tentativa de operador de executar função administrativa, inclusive pelo endereço direto, DEVE ser recusada sem efeito.
+- **FR-016**: Se o operador abrir o endereço de uma função administrativa (Vagas, Tarifas, Usuários, Relatórios completos, Auditoria), o acesso DEVE ser recusado sem executar a ação. A matriz do que cada perfil pode fazer está em FR-013.
 
 #### Setores e vagas
 
@@ -283,7 +284,7 @@ O administrador consulta o rastro de ações relevantes: mudanças cadastrais, c
 - **FR-026**: Cada tabela DEVE ter nome, tipo de veículo, setor de aplicação (opcional), valor da primeira hora, valor por hora adicional iniciada, data de início de vigência, data de término opcional e status ativa ou inativa.
 - **FR-027**: A primeira hora DEVE ser cobrada integralmente, inclusive para permanência inferior a uma hora. Cada hora adicional iniciada DEVE ser cobrada como hora completa.
 - **FR-028**: A tarifa aplicada a um atendimento DEVE ser a vigente e compatível com tipo de veículo e setor no momento da entrada. Se existirem ao mesmo tempo uma tabela ativa sem setor e outra ativa do mesmo tipo restrita ao setor da entrada, DEVE-se aplicar a específica do setor; a geral só DEVE ser usada quando não houver tabela daquele tipo para aquele setor. Nome da tabela e valores aplicados DEVEM ser gravados no estacionamento.
-- **FR-029**: Mudança futura de tarifa NÃO DEVE alterar cobrança ou histórico já gravados.
+- **FR-029**: Mudança futura de tarifa NÃO DEVE alterar cobrança já gravada. A preservação do histórico (tarifa, vaga, setor, usuário) segue FR-057.
 - **FR-030**: Tarifa já utilizada NÃO DEVE ser excluída; apenas inativada.
 - **FR-031**: Sem tarifa ativa compatível, a entrada DEVE ser bloqueada com mensagem explicativa.
 - **FR-032**: NÃO DEVE haver duas tabelas ativas com a mesma abrangência (mesmo tipo de veículo e mesmo setor, tratando “sem setor” como abrangência própria) e vigência sobreposta.
@@ -307,7 +308,7 @@ O administrador consulta o rastro de ações relevantes: mudanças cadastrais, c
 - **FR-044**: Pagamentos SÓ DEVEM ser registrados se houver caixa aberto. Cada saída paga DEVE gerar uma entrada financeira nesse caixa.
 - **FR-045**: NÃO DEVE haver mais de um caixa aberto no sistema por vez. Abrir o caixa de uma nova data operacional exige fechar o caixa atualmente aberto. Também NÃO DEVE haver dois caixas para a mesma data operacional.
 - **FR-046**: Administrador DEVE poder registrar sangrias, suprimentos e ajustes com valor, motivo, data, hora e responsável.
-- **FR-047**: Após o fechamento, movimentações NÃO DEVEM ser alteradas ou excluídas pelo operador. Administrador só altera com registro de auditoria.
+- **FR-047**: Com o caixa fechado, ninguém edita nem exclui movimentações já lançadas (incluindo receita de saída). O operador NÃO DEVE reabrir o caixa. O administrador SÓ DEVE corrigir numerário reabrindo o caixa (FR-048) e lançando sangria, suprimento ou ajuste — nunca reescrevendo a saída paga.
 - **FR-048**: Reabertura de caixa fechado DEVE ser exclusiva de administrador, com motivo obrigatório e auditoria.
 - **FR-049**: Totais do caixa DEVEM ser exibidos separados por forma de pagamento.
 
@@ -328,11 +329,13 @@ O administrador consulta o rastro de ações relevantes: mudanças cadastrais, c
 
 ### Key Entities
 
+Termo canônico na spec e na UI: **estadia** (ciclo de um veículo no pátio; às vezes chamado atendimento). No código e no contrato HTTP: `Stay`.
+
 - **Usuário**: Pessoa que acessa o sistema. Tem nome, login, senha, perfil (Administrador ou Operador), status, criação e último acesso.
 - **Setor**: Área do pátio (ex.: Pátio A, Coberto, Visitantes). Tem nome, código, descrição opcional, categorias permitidas e status.
 - **Vaga**: Unidade enumerada dentro de um setor (ex.: P-A-001). Tem código único, setor, categoria permitida e status livre, ocupada, bloqueada ou em manutenção.
 - **Tabela tarifária**: Preço vigente por tipo de veículo e, se houver, por setor. Tem valores de primeira hora e hora adicional, vigência e status. Depois de usada, só pode ser inativada.
-- **Estacionamento**: Atendimento de um veículo, da entrada à saída. Ocupa uma vaga, guarda a tarifa aplicada no momento da entrada e, ao encerrar, guarda permanência, valor, forma de pagamento, caixa e responsáveis.
+- **Estadia**: Ciclo de um veículo da entrada à saída. Ocupa uma vaga, guarda a tarifa aplicada no momento da entrada e, ao encerrar, guarda permanência, valor, forma de pagamento, caixa e responsáveis.
 - **Caixa diário**: Controle financeiro de uma data operacional, com abertura, movimentações, totais por forma de pagamento e fechamento (esperado, informado e diferença).
 - **Movimentação financeira**: Receita de saída paga, sangria, suprimento ou ajuste, sempre ligada a um caixa e a um responsável.
 - **Evento de auditoria**: Rastro de ação relevante, com quando, quem, o quê e os dados alterados.
@@ -372,7 +375,7 @@ O administrador consulta o rastro de ações relevantes: mudanças cadastrais, c
 - Tarifa geral (sem setor) e tarifa de setor do mesmo tipo podem coexistir ativas: na entrada, a do setor tem precedência.
 - Formato antigo de placa aceita o padrão `ABC-1234` (hífen). O sistema normaliza letras para maiúsculas.
 - A identidade visual já definida do produto permanece a referência de aparência; esta feature não inventa um segundo sistema visual.
-- Dados de demonstração, se usados para treino ou vitrine, vêm claramente marcados como demonstração e não se misturam com expediente real sem esse aviso.
+- Não há seed de setores, vagas, tarifas ou estadias. Se no futuro existirem dados de treino, o prefixo visível é “Demonstração”. Mensagens de sucesso aparecem na tela (toast ou texto junto ao formulário), não só na resposta técnica.
 
 ### Fora de escopo
 

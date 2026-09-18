@@ -1,30 +1,58 @@
-import { useState } from "react";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./auth/AuthContext";
+import { AppNav } from "./components/AppNav";
+import { RequireAuth, RequireRole } from "./components/RequireRole";
+import { CashPage } from "./pages/CashPage";
+import { HistoryPage } from "./pages/HistoryPage";
+import { LoginPage } from "./pages/LoginPage";
+import { OperationPage } from "./pages/OperationPage";
+import { ReportsPage } from "./pages/ReportsPage";
+import { SpotsPage } from "./pages/SpotsPage";
+import { TariffsPage } from "./pages/TariffsPage";
+import { UsersPage } from "./pages/UsersPage";
 import "./styles/tokens.css";
 import "./styles/app.css";
 
-export default function App() {
-  const [query, setQuery] = useState("");
-
+function Shell() {
   return (
-    <main className="page">
-      <h1>Parking App</h1>
-      <article className="card">
-        <p className="card__lead">
-          Vitrine da identidade visual. Esta tela não consulta o serviço.
-        </p>
-        <label className="field">
-          <span className="field__label">Pesquisar</span>
-          <input
-            className="field__input"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Escreva aqui"
-          />
-        </label>
-        <button className="button" type="button">
-          Saiba mais
-        </button>
-      </article>
-    </main>
+    <div className="shell">
+      <AppNav />
+      <main className="page">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route element={<RequireAuth />}>
+        <Route element={<Shell />}>
+          <Route path="/" element={<Navigate to="/operacao" replace />} />
+          <Route path="/operacao" element={<OperationPage />} />
+          <Route path="/caixa" element={<CashPage />} />
+          <Route path="/historico" element={<HistoryPage />} />
+          <Route element={<RequireRole admin />}>
+            <Route path="/vagas" element={<SpotsPage />} />
+            <Route path="/tarifas" element={<TariffsPage />} />
+            <Route path="/relatorios" element={<ReportsPage />} />
+            <Route path="/usuarios" element={<UsersPage />} />
+          </Route>
+        </Route>
+      </Route>
+      <Route path="*" element={<Navigate to="/operacao" replace />} />
+    </Routes>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

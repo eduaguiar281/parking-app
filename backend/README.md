@@ -1,18 +1,24 @@
 # Backend — Parking App
 
-Serviço HTTP da fundação do Parking App. Sem regra de estacionamento nesta etapa.
+Serviço HTTP da gestão de estacionamento (setores, vagas, tarifas, caixa, estadias, relatórios).
 
 ## Stack
 
 - SDK **.NET 10**
 - ASP.NET Core Minimal APIs
-- Persistência: **EF Core** com **SQLite** (quando a spec tiver regra persistida)
+- Persistência: **EF Core + SQLite** (`backend/parking.db`, ou `ConnectionStrings:Parking`)
+- Sessão: cookie HTTP-only `ParkingApp.Session`
+- PDF: QuestPDF (Community)
 
 Identificadores de código (tipos, funções, variáveis, arquivos) são em **inglês**. Este README, comentários de negócio e nomes de teste são em **pt-BR**.
 
+Administrador inicial (base vazia): login `admin`, senha de `PARKING_BOOTSTRAP_PASSWORD` (local: `admin123` no `launchSettings`).
+
+A UI chama a API em `/api` (proxy do Vite em desenvolvimento). `GET /alive` permanece anônimo.
+
 ## Arquitetura
 
-Quando a spec tiver regra de negócio, a fatia entra no **mesmo** `csproj` (`ParkingApp.Api`). Não há três projetos Domain/Application/Infrastructure. Pastas (ou tipos com dono claro) bastam. Pastas vazias sem comportamento da spec atual não devem ser criadas.
+A fatia entra no **mesmo** `csproj` (`ParkingApp.Api`). Não há três projetos Domain/Application/Infrastructure. Pastas (ou tipos com dono claro) bastam.
 
 Separação de responsabilidades:
 
@@ -46,6 +52,6 @@ Convenção de nomes:
 
 `<método>_<cenário>_<resultado esperado>`
 
-Exemplo: `GetAlive_servicoEmExecucao_retornaEstouVivo`.
+Exemplos: `GetAlive_servicoEmExecucao_retornaEstouVivo`, `CreateSession_senhaInvalida_retorna401`, `Calculate_carro30min_soPrimeiraHora`.
 
-Os testes ficam em `tests/`.
+Os testes ficam em `tests/`. Domain não usa SQLite. API usa `WebApplicationFactory` com arquivo SQLite temporário.

@@ -1,23 +1,18 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "../src/App";
+import { jsonResponse } from "./helpers";
+import { render } from "@testing-library/react";
 
-describe("render_vitrineInicial_exibeTituloCardBotaoECampo", () => {
+describe("render_app_naoAutenticado_mostraLogin", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("render_vitrineInicial_exibeTituloCardBotaoECampo", () => {
-    const fetchSpy = vi.spyOn(globalThis, "fetch");
-
+  it("render_app_naoAutenticado_mostraLogin", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(jsonResponse({ message: "Sessão inválida." }, 401));
     render(<App />);
-
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Parking App",
-    );
-    expect(screen.getByRole("article")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Saiba mais" })).toBeInTheDocument();
-    expect(screen.getByRole("textbox", { name: "Pesquisar" })).toBeInTheDocument();
-    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(await screen.findByRole("heading", { name: "Entrar" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Entrar" })).toBeInTheDocument();
   });
 });
