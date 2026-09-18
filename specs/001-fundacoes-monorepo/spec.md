@@ -12,13 +12,13 @@
 
 ### Session 2026-09-18
 
-- Q: A identidade visual da fundação continua sendo QuestUI ornamental? → A: Não. A fonte da verdade é o `frontend/DESIGN.md` vigente (Action Blue, canvas claro, SF Pro/Inter). A vitrine continua sendo título, card, botão e campo.
+- Q: A identidade visual da fundação continua sendo QuestUI ornamental? → A: Não. A fonte da verdade é o `frontend/DESIGN.md` vigente: console dark-only com menu lateral, acento violeta, Inter. A vitrine continua sendo título, card, botão e campo **dentro** desse shell.
 
 ### Session 2026-09-15
 
 - Q: Como um colega deve confirmar que o serviço do backend está no ar? → A: Abrir um endereço e receber uma resposta simples de que o serviço está vivo
 - Q: A tela inicial do frontend deve consultar esse endereço de vida do backend, ou só mostrar a identidade visual? → A: A tela inicial é só a identidade visual; não fala com o backend nesta feature
-- Q: O que a tela inicial precisa mostrar para provar a identidade QuestUI? → A: Vitrine curta: título, card, botão e campo, todos no visual QuestUI
+- Q: O que a tela inicial precisa mostrar para provar a identidade visual? → A: Vitrine curta: título, card, botão e campo, todos no visual do DESIGN.md
 - Q: Em que idioma devem ficar os nomes no código (tipos, funções, variáveis)? → A: Inglês nos identificadores de código; pt-BR em docs, UI e nomes de teste
 
 ## User Scenarios & Testing *(mandatory)*
@@ -57,7 +57,7 @@ Um membro da equipe consegue construir, executar e testar o serviço a partir de
 
 ### User Story 3 - Interface com identidade visual documentada (Priority: P1)
 
-Um membro da equipe consegue construir, executar e testar a interface a partir de `frontend/`, com React na versão estável mais recente. A aparência segue o sistema de design descrito em `frontend/DESIGN.md`. A tela inicial é uma vitrine curta (título, card, botão e campo) nessa identidade — Action Blue, tile escuro `{product-tile-dark}`, tipografia SF Pro/Inter com tracking negativo, um único acento interativo. Nesta feature a tela NÃO consulta o backend: a vitrine funciona mesmo com o serviço desligado.
+Um membro da equipe consegue construir, executar e testar a interface a partir de `frontend/`, com React na versão estável mais recente. A aparência segue o sistema de design descrito em `frontend/DESIGN.md`. A tela inicial é um console (menu lateral + área de trabalho) com vitrine curta no main (título, card, botão e campo) — dark-only, acento violeta `{colors.primary}`, tipografia Inter 13px/14px/18px. Nesta feature a tela NÃO consulta o backend: a vitrine funciona mesmo com o serviço desligado.
 
 **Why this priority**: Sem identidade visual e sem app que rode, o frontend é só pasta vazia. O DESIGN.md é a especificação própria da aparência, exigida nesta fundação.
 
@@ -66,7 +66,7 @@ Um membro da equipe consegue construir, executar e testar a interface a partir d
 **Acceptance Scenarios**:
 
 1. **Given** o ambiente descrito no README de `frontend/` e o backend desligado, **When** a pessoa constrói e inicia a interface, **Then** vê em pt-BR um título, um card, um botão e um campo, todos no visual do DESIGN.md, e a tela NÃO tenta consultar o serviço.
-2. **Given** `frontend/DESIGN.md`, **When** um revisor compara cores, tipos, espaçamento e regras do/don’t, **Then** o arquivo é a fonte da verdade visual (Action Blue #0066CC, tile escuro #272729, texto `{on-dark}` #FFFFFF, SF Pro/Inter, grade de 8px, um único acento, sem sombra em chrome).
+2. **Given** `frontend/DESIGN.md`, **When** um revisor compara cores, tipos, espaçamento e regras do/don’t, **Then** o arquivo é a fonte da verdade visual (shell com menu `{colors.sidebar}` `#000000`, área `{colors.page}` `#09090b`, item ativo em lavagem violeta, acento `{colors.primary}` `#7c3aed`, Inter, grade de 4px, dark-only, card-painel com `{shadow.card}`).
 3. **Given** o README de `frontend/` com cobertura mínima declarada, **When** a suíte em `frontend/tests/` roda, **Then** os testes passam, usam a convenção de nomes e a cobertura atende o README.
 
 ---
@@ -96,7 +96,7 @@ Um membro da equipe consegue construir, executar e testar a interface a partir d
 - **FR-005**: O backend DEVE ser desenvolvido com SDK .NET 10. Nenhuma outra versão de SDK DEVE ser a base do projeto.
 - **FR-006**: O frontend DEVE ser desenvolvido com React na versão estável mais recente do canal Latest no momento da implementação. Na data desta spec, essa versão é React 19.3.
 - **FR-007**: `frontend/DESIGN.md` DEVE ser a fonte da verdade visual da interface (cores, tipografia, espaçamento, raio, elevação, componentes base, do’s e don’ts).
-- **FR-008**: A tela inicial DEVE ser uma vitrine curta com exatamente estes elementos visíveis: título, card, botão e campo, todos conforme o DESIGN.md (fundo `{product-tile-dark}`, título claro, acento único Action Blue, card `{store-utility-card}` em `{colors.canvas-parchment}` com hairline, botão pill, campo pill). NÃO DEVE omitir nenhum desses quatro elementos nem introduzir segundo acento, sombra em chrome ou gradiente decorativo.
+- **FR-008**: A tela inicial DEVE ser o shell de console do DESIGN.md (menu lateral + área de trabalho) com exatamente estes elementos no main: título, card, botão e campo (fundo `{colors.page}`, menu `{colors.sidebar}`, título `{colors.ink}`, acento único `{colors.primary}`, item de menu ativo em lavagem violeta, card-painel `{colors.surface}` com `{radius.card}` e `{shadow.card}`, botão e campo com `{radius.control}`). NÃO DEVE omitir nenhum desses quatro elementos nem introduzir segundo acento de marca, tema claro, gradiente decorativo, rota extra ou módulos de negócio no menu.
 - **FR-009**: Com o serviço em execução, um colega DEVE abrir um endereço documentado no README de `backend/` e receber uma resposta simples de que o serviço está vivo. Esse endereço NÃO DEVE exigir autenticação nem expor regra de estacionamento. Confirmação só no terminal NÃO atende este requisito.
 - **FR-010**: Backend e frontend DEVEM ter suíte de testes em `tests/`. Cobertura DEVE cumprir o mínimo declarado no README de cada projeto. Nomes de teste DEVEM estar em pt-BR e seguir `<método>_<cenário>_<resultado esperado>`.
 - **FR-011**: Identificadores de código (tipos, funções, variáveis, arquivos de código) DEVEM estar em inglês. Os READMEs de `backend/` e `frontend/` DEVEM declarar essa regra local, como a constitution permite. README, comentários de negócio e textos da interface DEVEM permanecer em pt-BR. `DESIGN.md` é a fonte visual vigente (tokens e do’s/don’ts).
@@ -117,7 +117,7 @@ Um membro da equipe consegue construir, executar e testar a interface a partir d
 - **SC-001**: Uma pessoa nova no time localiza `backend/` e `frontend/` e abre o README correspondente em menos de 1 minuto, sem ajuda.
 - **SC-002**: 100% dos projetos de aplicação (`backend` e `frontend`) têm README em pt-BR com stack, comandos, regra “código em inglês” e cobertura de testes explícita.
 - **SC-003**: 100% das suítes de teste dos dois projetos passam em um único comando documentado no README de cada um.
-- **SC-004**: Um revisor, olhando a vitrine (título, card, botão, campo) contra o DESIGN.md, marca como atendidas pelo menos 8 regras do/don’t aplicáveis a esses elementos (tile `{product-tile-dark}`, Action Blue como único acento mesmo no escuro, tracking negativo no título, body 17px, card `{store-utility-card}` em parchment sem sombra, botão pill com `scale(0.95)` no ativo, campo pill 44px, sem gradiente). Chips ficam fora desta vitrine.
+- **SC-004**: Um revisor, olhando o console (menu + título, card, botão, campo) contra o DESIGN.md, marca como atendidas pelo menos 8 regras do/don’t aplicáveis (menu 256px `{colors.sidebar}`, área `{colors.page}`, item ativo em lavagem violeta, acento `{colors.primary}`, dark-only, título de página 18px/600, item de menu 13px, corpo 14px, card-painel com `{radius.card}` e `{shadow.card}`, botão e campo `{radius.control}` com foco `{shadow.focus}`, sem pílula, sem landing centralizada, sem tema claro). Chips e métricas inventadas ficam fora desta vitrine.
 - **SC-005**: As duas demonstrações desta spec são independentes: serviço vivo pelo endereço do README, e tela inicial só com identidade visual, sem o outro projeto ligado.
 - **SC-006**: Com o serviço no ar, 100% das tentativas de abrir o endereço de vida documentado no README devolvem a confirmação de que está vivo em menos de 3 segundos em ambiente local.
 

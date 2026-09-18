@@ -36,12 +36,13 @@
 
 ## 4. Aparência (DESIGN.md)
 
-**Decision:** `frontend/DESIGN.md` é a fonte humana. `frontend/src/styles/tokens.css` copia os tokens (cores, tipo, espaço, raio, sombra). A vitrine vive em `App.tsx` com HTML semântico (`h1`, `article`, `button`, `input`) e classes CSS. Sem biblioteca de componentes, sem Tailwind. Substituição de fonte: `system-ui` / `-apple-system` com Inter (Google Fonts) para plataformas sem SF Pro.
+**Decision:** `frontend/DESIGN.md` é a fonte humana. `frontend/src/styles/tokens.css` copia os tokens (cores, tipo, espaço, raio, sombra). A vitrine vive em `App.tsx` com HTML semântico (`h1`, `article`, `button`, `input`) e classes CSS. Sem biblioteca de componentes, sem Tailwind. Fonte: Inter (Google Fonts) com stack `system-ui` / `-apple-system`.
 
-**Rationale:** A spec pede quatro elementos, não um design system implementado. Tailwind e paletas com segundo acento violam o DESIGN.md (um único Action Blue, sem sombra em chrome). Gerar CSS a partir do markdown seria automação sem pedido. Duplicar hex no DESIGN.md e no CSS é similaridade acidental aceitável (constitution DRY).
+**Rationale:** A spec pede quatro elementos, não um design system implementado. O visual vigente é dark-only com acento violeta; Tailwind/Radix/Next trariam stack que a vitrine não precisa (YAGNI / KISS). Gerar CSS a partir do markdown seria automação sem pedido. Duplicar hex no DESIGN.md e no CSS é similaridade acidental aceitável (constitution DRY).
 
 **Alternatives considered:**
-- Tailwind / shadcn — segundo acento e sombras de chrome que o DESIGN.md proíbe.
+- Tailwind / shadcn / Radix — dependências e classes utilitárias para quatro elementos.
+- Next.js — roteamento e SSR que a vitrine não precisa.
 - Quatro arquivos de componente + Storybook — catálogo que a spec proibiu.
 - CSS-in-JS — dependência extra.
 

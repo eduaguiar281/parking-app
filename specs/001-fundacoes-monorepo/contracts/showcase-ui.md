@@ -1,23 +1,28 @@
 # Contrato da vitrine (UI)
 
 Tela única, sem roteamento. Não chama o backend. Textos em pt-BR.
+Chrome de console: menu à esquerda, área de trabalho à direita.
 
 ## Elementos obrigatórios
 
 | Elemento | Papel acessível | Tokens do DESIGN.md |
 |----------|-----------------|---------------------|
-| Título | `heading` nível 1 | `{typography.hero-display}` (Inter/SF Pro Display 56px / 600, tracking negativo); tinta `{colors.on-dark}` `#ffffff`; fundo da página `{component.product-tile-dark}` / `{colors.surface-tile-1}` `#272729` |
-| Card | agrupamento visível (ex. `article`) | `{component.store-utility-card}` com fill `{colors.canvas-parchment}` `#f5f5f7`, borda `{colors.hairline}` `#e0e0e0`, raio `{rounded.lg}` 18px, padding `{spacing.lg}` 24px, sem sombra |
-| Botão | `button` | `{component.button-primary}`: fundo `{colors.primary}` `#0066cc`, texto `{colors.on-primary}` `#ffffff`, raio `{rounded.pill}`; ativo `scale(0.95)`; foco outline 2px `{colors.primary-focus}` `#0071e3` (Action Blue também no tile escuro) |
-| Campo | `textbox` com rótulo | `{component.search-input}`: fundo `{colors.canvas}`, texto `{colors.ink}`, raio `{rounded.pill}`, altura 44px, borda `rgba(0, 0, 0, 0.08)`; rótulo `{colors.ink}` no card claro; foco outline 2px `{colors.primary-focus}` |
+| Menu | `complementary` / `aside` com nome “Menu” | largura `{layout.sidebar}` 256px; fundo `{colors.sidebar}` `#000000`; borda direita `{colors.border}` |
+| Marca | texto no menu | “Parking App” + tag “Console”; marca 32px `{colors.primary}` |
+| Item de menu | `button` com `aria-current="page"` | “Vitrine”; 13px; ativo `{colors.nav-active-bg}` + `{colors.nav-active-border}` + `{colors.nav-active-ink}` |
+| Título | `heading` nível 1 | `{typography.title}` (Inter 18px / 600); “Vitrine”; tinta `{colors.ink}`; no topbar da área `{colors.page}` `#09090b` |
+| Card | agrupamento visível (ex. `article`) | painel `{colors.surface}`, borda `{colors.border-subtle}`, raio `{radius.card}` 12px, `{shadow.card}` inset |
+| Botão | `button` “Saiba mais” | fundo `{colors.primary}` `#7c3aed`, texto `{colors.on-primary}`, raio `{radius.control}` 8px, altura 40px; hover `{colors.primary-hover}`; foco `{shadow.focus}` |
+| Campo | `textbox` com rótulo | fundo `{colors.surface-solid}`, texto `{colors.ink-field}`, raio `{radius.control}` 8px; rótulo `{colors.ink-muted}` envolvendo o controle; foco `{shadow.focus}` |
 
 ## Comportamento
 
-- Foco e pressionado só mudam o visual (CSS). Sem persistência.
-- Sem segundo acento de cor. Sem sombra no card, no botão ou no texto.
-- Sem gradiente decorativo. Sem arredondar o tile de página (`{rounded.none}`); o card usa `{rounded.lg}`; o campo e o botão usam `{rounded.pill}`.
-- Sem chips nesta vitrine.
+- Foco e hover só mudam o visual (CSS). Sem persistência. Sem navegação real.
+- Sem segundo acento de marca. Cores semânticas não aparecem como métricas inventadas.
+- Sem gradiente decorativo. Sem pílula no botão ou no campo. Sem `scale` no ativo.
+- Dark-only. Sem card parchment/branco. Sem layout de landing (conteúdo centralizado em 720px).
+- Sem chips, sem módulos extras no menu, sem copiar textos do console de referência.
 
 ## Aceite visual (SC-004)
 
-Revisor confere as regras do/don’t aplicáveis a título, card, botão e campo contra `frontend/DESIGN.md`.
+Revisor confere as regras do/don’t aplicáveis ao shell e a título, card, botão e campo contra `frontend/DESIGN.md`.

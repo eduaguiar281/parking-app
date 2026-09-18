@@ -34,12 +34,12 @@ description: "Lista de tarefas da fundação do monorepo"
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Esqueleto que compila nos dois projetos, sem `/alive` e sem vitrine QuestUI
+**Purpose**: Esqueleto que compila nos dois projetos, sem `/alive` e sem vitrine
 
 **⚠️ CRITICAL**: Nenhuma história começa antes desta fase
 
 - [x] T003 Criar `backend/src/ParkingApp.Api.csproj` (SDK .NET 10, Web) e `backend/src/Program.cs` que sobe o host e compila, sem endpoint de vida
-- [x] T004 [P] Criar o esqueleto Vite + React 19.3 + TypeScript em `frontend/package.json`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/index.html`, `frontend/src/main.tsx` e `frontend/src/App.tsx` (stub, sem QuestUI)
+- [x] T004 [P] Criar o esqueleto Vite + React 19.3 + TypeScript em `frontend/package.json`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/index.html`, `frontend/src/main.tsx` e `frontend/src/App.tsx` (stub, sem vitrine)
 - [x] T005 Criar `backend/tests/ParkingApp.Api.Tests.csproj` referenciando a API, xUnit, `Microsoft.AspNetCore.Mvc.Testing` e Coverlet com limiar de 80% de linhas
 - [x] T006 Criar `backend/ParkingApp.sln` incluindo `backend/src/ParkingApp.Api.csproj` e `backend/tests/ParkingApp.Api.Tests.csproj`
 - [x] T007 Configurar Vitest + Testing Library + jsdom + cobertura 80% de linhas em `frontend/vite.config.ts` com testes em `frontend/tests/`
@@ -99,11 +99,11 @@ description: "Lista de tarefas da fundação do monorepo"
 
 ### Implementation for User Story 3
 
-- [x] T015 [P] [US3] Escrever `frontend/DESIGN.md` em pt-BR com tokens e do’s/don’ts do QuestUI (cores, Cinzel/Spectral, grade 8px, raios, glows)
+- [x] T015 [P] [US3] Escrever `frontend/DESIGN.md` em pt-BR com tokens e do’s/don’ts (dark-only, acento violeta, Inter, grade 4px, raios de card/controle)
 - [x] T016 [P] [US3] Materializar tokens em `frontend/src/styles/tokens.css`
-- [x] T017 [P] [US3] Estilizar vitrine em `frontend/src/styles/app.css` (card, botão primário, campo, hover/foco, transições ≤ 300ms)
+- [x] T017 [P] [US3] Estilizar vitrine em `frontend/src/styles/app.css` (card, botão primário, campo, hover/foco)
 - [x] T018 [US3] Implementar a vitrine em `frontend/src/App.tsx` (h1, article, button, input+label em pt-BR; importar os CSS; sem fetch)
-- [x] T019 [P] [US3] Carregar Cinzel, Spectral e Fira Code em `frontend/index.html`
+- [x] T019 [P] [US3] Carregar Inter em `frontend/index.html`
 - [x] T020 [US3] Rodar `npm test` em `frontend/` e confirmar cobertura de linhas ≥ 80% e o teste T014 verde
 
 **Checkpoint**: US3 funciona com o backend desligado. Sem catálogo extra de componentes.

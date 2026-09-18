@@ -12,8 +12,13 @@ describe("render_vitrineInicial_exibeTituloCardBotaoECampo", () => {
 
     render(<App />);
 
+    expect(screen.getByRole("complementary", { name: "Menu" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Parking App",
+      "Vitrine",
+    );
+    expect(screen.getByRole("button", { name: "Vitrine" })).toHaveAttribute(
+      "aria-current",
+      "page",
     );
     expect(screen.getByRole("article")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Saiba mais" })).toBeInTheDocument();

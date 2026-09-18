@@ -22,8 +22,8 @@ Estado visual da tela inicial. Não é gravado.
 
 | Campo | Tipo | Regras |
 |-------|------|--------|
-| titulo | texto visível | pt-BR, `{typography.hero-display}` |
-| card | conteúdo do card | pt-BR, `{component.store-utility-card}` em `{colors.canvas-parchment}` |
+| titulo | texto visível | pt-BR, `{typography.title}` no topbar (“Vitrine”) |
+| card | conteúdo do card | pt-BR, painel `{colors.surface}` com `{radius.card}` no main |
 | botao | rótulo | pt-BR; estados visuais CSS (foco/pressionado/desabilitado) permitidos |
 | campo | valor local do input | opcional; some ao recarregar; não envia a lugar nenhum |
 
