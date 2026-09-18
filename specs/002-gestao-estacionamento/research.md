@@ -65,7 +65,7 @@
 
 ## 7. Usuário inicial e dados de demonstração
 
-**Decision:** Se a tabela de usuários estiver vazia no arranque, criar um Administrador (`admin`). Senha local em `launchSettings` / variável `PARKING_BOOTSTRAP_PASSWORD`. Sem seed de setores, vagas, tarifas ou estadias. Não há dados de demonstração nesta feature; se surgirem depois, o rótulo visível é “Demonstração”.
+**Decision:** No arranque, criar `admin` (Administrador) e `operador` (Operador) se esses logins ainda não existirem. Senha local em `launchSettings` / variável `PARKING_BOOTSTRAP_PASSWORD`. Sem seed de setores, vagas, tarifas ou estadias. Não há dados de demonstração nesta feature; se surgirem depois, o rótulo visível é “Demonstração”.
 
 **Rationale:** Spec: administrador da implantação; dados de demonstração, se existirem, precisam de aviso. Seed de pátio inventaria expediente falso. O quickstart cadastra o mínimo na UI.
 

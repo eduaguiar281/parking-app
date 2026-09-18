@@ -8,14 +8,14 @@ html,
 body,
 #root {
   min-height: 100%;
-  background: var(--color-surface-tile-1);
+  background: var(--color-canvas-parchment);
 }
 
 body {
   margin: 0;
-  background: var(--color-surface-tile-1);
-  color: var(--color-on-dark);
-  color-scheme: dark;
+  background: var(--color-canvas-parchment);
+  color: var(--color-ink);
+  color-scheme: light;
   font-family: var(--font-body);
   font-size: var(--font-body-size);
   font-weight: var(--font-body-weight);
@@ -32,7 +32,7 @@ body {
 
 h1 {
   margin: 0 0 var(--space-xl);
-  color: var(--color-on-dark);
+  color: var(--color-ink);
   font-family: var(--font-display);
   font-size: var(--font-hero-size);
   font-weight: var(--font-hero-weight);
@@ -41,7 +41,7 @@ h1 {
 }
 
 .card {
-  background: var(--color-canvas-parchment);
+  background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
   box-shadow: none;
@@ -205,15 +205,29 @@ h1 {
   color: var(--color-primary-on-dark);
 }
 
-.nav__hamburger,
-.button--ghost {
+.nav__hamburger {
   min-height: var(--input-height);
   padding: var(--button-padding);
   background: transparent;
   color: var(--color-on-dark);
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.button--ghost {
+  min-height: var(--input-height);
+  padding: var(--button-padding);
+  background: transparent;
+  color: var(--color-ink);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-pill);
   cursor: pointer;
+}
+
+.nav .button--ghost {
+  color: var(--color-on-dark);
+  border-color: rgb(255 255 255 / 35%);
 }
 
 .nav__user {
@@ -233,7 +247,7 @@ h1 {
 .stack h1,
 .stack h2 {
   margin: 0 0 var(--space-sm);
-  color: var(--color-on-dark);
+  color: var(--color-ink);
 }
 
 .card h2,
@@ -251,7 +265,7 @@ h1 {
 }
 
 .metric {
-  background: var(--color-canvas-parchment);
+  background: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md);
   padding: var(--space-md);
@@ -281,7 +295,7 @@ h1 {
 }
 
 .banner--error {
-  background: var(--color-canvas-parchment);
+  background: var(--color-canvas);
   color: var(--color-ink);
   border: 1px solid var(--color-hairline);
 }

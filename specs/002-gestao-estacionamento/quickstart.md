@@ -27,7 +27,7 @@ npm run dev
 
 - API: `http://localhost:5080` (`GET /alive` → `estou vivo`)
 - UI: `http://localhost:5173` (proxy `/api` → 5080)
-- Login inicial (só se a base estiver vazia): `admin` / senha de `PARKING_BOOTSTRAP_PASSWORD` no `launchSettings`
+- Login inicial: `admin` ou `operador` / senha de `PARKING_BOOTSTRAP_PASSWORD` no `launchSettings` (local: `admin123`)
 
 ## Roteiro mínimo (P1)
 
@@ -37,7 +37,7 @@ npm run dev
 4. **Caixa** — abrir o dia com valor de abertura; confirmar que um segundo aberto é recusado.
 5. **Entrada** — placa `ABC-1234`, carro, Pátio B, vaga sugerida; painel mostra ocupada. Repetir a placa (recusa). Moto no Pátio B (recusa).
 6. **Saída** — registrar saída com Pix; conferir resumo (primeira hora se < 1 h); vaga livre; receita no caixa; comprovante.
-7. **Operador** — criar usuário operador, sair, entrar com ele: sem Vagas/Tarifas/Usuários/Relatórios; URL `/usuarios` recusada.
+7. **Operador** — sair e entrar com `operador` (seed): sem Vagas/Tarifas/Usuários/Relatórios; URL `/usuarios` recusada.
 
 ## Esperado
 

@@ -41,4 +41,14 @@ public class SessionEndpointTests : ApiTest
         var response = await LoginAsync(anon, "inativo1", "senha123");
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
+
+    [Fact]
+    public async Task CreateSession_operadorSeed_defineCookie()
+    {
+        var client = Factory.CreateClient(new() { HandleCookies = false, AllowAutoRedirect = false });
+        var response = await LoginAsync(client, "operador", "admin123");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
+        Assert.Equal("Operator", body.GetProperty("role").GetString());
+    }
 }

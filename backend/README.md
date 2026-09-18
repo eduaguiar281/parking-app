@@ -12,7 +12,7 @@ Serviço HTTP da gestão de estacionamento (setores, vagas, tarifas, caixa, esta
 
 Identificadores de código (tipos, funções, variáveis, arquivos) são em **inglês**. Este README, comentários de negócio e nomes de teste são em **pt-BR**.
 
-Administrador inicial (base vazia): login `admin`, senha de `PARKING_BOOTSTRAP_PASSWORD` (local: `admin123` no `launchSettings`).
+Usuários iniciais (se ainda não existirem): `admin` (Administrador) e `operador` (Operador). Senha de `PARKING_BOOTSTRAP_PASSWORD` (local: `admin123` no `launchSettings`).
 
 A UI chama a API em `/api` (proxy do Vite em desenvolvimento). `GET /alive` permanece anônimo.
 
