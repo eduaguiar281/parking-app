@@ -256,6 +256,213 @@ h1 {
   pointer-events: none;
 }
 
+.card {
+  padding: var(--space-lg);
+}
+
+a.nav__item {
+  text-decoration: none;
+}
+
+.nav__links--hidden {
+  display: none;
+}
+
+.nav__hamburger {
+  min-height: var(--button-height);
+  margin: 0 var(--space-sm) var(--space-sm);
+  padding: var(--button-padding);
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.nav__user {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  color: var(--color-ink-muted);
+  font-size: var(--font-hint-size);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.button--ghost:hover {
+  background: rgb(39 39 42 / 0.5);
+}
+
+.workspace > .stack,
+.workspace > .page,
+.page {
+  padding: var(--space-lg) var(--space-xl) var(--space-xl);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.stack > h1:first-child {
+  margin-bottom: 0;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-sm);
+}
+
+.metric {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  padding: var(--space-md);
+}
+
+.metric span {
+  display: block;
+  font-size: var(--font-hint-size);
+  color: var(--color-ink-muted);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-sm);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.banner {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-control);
+}
+
+.banner--error {
+  background: rgb(252 165 165 / 0.12);
+  color: var(--color-danger);
+  border: 1px solid rgb(252 165 165 / 0.35);
+}
+
+.banner--ok {
+  background: rgb(52 211 153 / 0.12);
+  color: var(--color-success);
+  border: 1px solid rgb(52 211 153 / 0.35);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--color-ink);
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.spot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-sm);
+}
+
+.spot-tile {
+  min-height: 88px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  background: var(--color-surface);
+}
+
+.spot-tile--free {
+  border-color: rgb(52 211 153 / 0.35);
+}
+
+.spot-tile--occupied {
+  border-color: var(--color-nav-active-border);
+  background: var(--color-nav-active-bg);
+}
+
+.spot-tile--blocked,
+.spot-tile--maintenance {
+  border-color: rgb(252 211 77 / 0.35);
+}
+
+.dialog {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 55%);
+  display: grid;
+  place-items: start center;
+  overflow: auto;
+  padding: var(--space-md);
+  z-index: 20;
+}
+
+.dialog .card {
+  margin: auto;
+  max-width: 480px;
+  width: 100%;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-sm);
+}
+
+.summary dt {
+  font-size: var(--font-hint-size);
+  color: var(--color-ink-muted);
+}
+
+.summary dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+@media (max-width: 833px) {
+  .shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nav__user {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 0;
+  }
+}
+
 @media (max-width: 560px) {
   .shell {
     flex-direction: column;
@@ -268,7 +475,10 @@ h1 {
   }
 
   .topbar,
-  .content {
+  .content,
+  .workspace > .stack,
+  .workspace > .page,
+  .page {
     padding-left: var(--space-sm);
     padding-right: var(--space-sm);
   }

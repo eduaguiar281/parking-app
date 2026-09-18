@@ -1,0 +1,904 @@
+openapi: 3.0.3
+info:
+  title: Parking App — gestão de estacionamento
+  description: |
+    Contratos HTTP desta feature. Autenticação por cookie `ParkingApp.Session`
+    (não persistente: vale até logout ou fechar o aplicativo; sem timeout por ociosidade).
+    `GET /alive` permanece anônimo (fundação). Demais rotas `/api` exigem sessão,
+    salvo `POST /api/session`. Erros de negócio em pt-BR (`code` + `message`).
+    Placa antiga aceita `ABC1234` e grava `ABC-1234`.
+  version: 0.2.0
+servers:
+  - url: http://localhost:5080
+    description: Serviço local; a UI em :5173 usa proxy `/api`
+paths:
+  /alive:
+    get:
+      operationId: getAlive
+      security: []
+      summary: Sinal de vida da fundação
+      responses:
+        "200":
+          description: Processo no ar
+          content:
+            text/plain:
+              schema:
+                type: string
+                enum: ["estou vivo"]
+  /api/session:
+    post:
+      operationId: createSession
+      security: []
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [login, password]
+              properties:
+                login: { type: string }
+                password: { type: string }
+      responses:
+        "200":
+          description: Cookie de sessão + usuário
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CurrentUser" }
+        "401":
+          $ref: "#/components/responses/Error"
+    get:
+      operationId: getSession
+      summary: Usuário da sessão
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CurrentUser" }
+        "401":
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteSession
+      summary: Logout (encerra o cookie de sessão)
+      responses:
+        "204": { description: Sessão encerrada }
+  /api/users:
+    get:
+      operationId: listUsers
+      summary: Listar usuários (admin)
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/User" }
+        "403":
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createUser
+      summary: Criar usuário (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UserWrite" }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+        "403":
+          $ref: "#/components/responses/Error"
+  /api/users/{id}:
+    put:
+      operationId: updateUser
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UserWrite" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+        "403":
+          $ref: "#/components/responses/Error"
+        "409":
+          description: Último administrador ativo não pode ser rebaixado
+  /api/users/{id}/deactivate:
+    post:
+      operationId: deactivateUser
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204": { description: Inativado }
+        "403":
+          $ref: "#/components/responses/Error"
+        "409":
+          description: Último administrador ativo não pode ser inativado
+  /api/users/{id}/activate:
+    post:
+      operationId: activateUser
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204": { description: Reativado }
+        "403":
+          $ref: "#/components/responses/Error"
+  /api/sectors:
+    get:
+      operationId: listSectors
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Sector" }
+        "403":
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createSector
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SectorWrite" }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Sector" }
+        "403":
+          $ref: "#/components/responses/Error"
+  /api/sectors/{id}:
+    put:
+      operationId: updateSector
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SectorWrite" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Sector" }
+        "403":
+          $ref: "#/components/responses/Error"
+  /api/spots:
+    get:
+      operationId: listSpots
+      parameters:
+        - in: query
+          name: sectorId
+          schema: { type: string, format: uuid }
+        - in: query
+          name: vehicleType
+          schema: { $ref: "#/components/schemas/VehicleType" }
+        - in: query
+          name: onlyAvailable
+          schema: { type: boolean }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Spot" }
+    post:
+      operationId: createSpot
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SpotWrite" }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Spot" }
+        "400":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+  /api/spots/batch:
+    post:
+      operationId: createSpotBatch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sectorId, prefix, start, end]
+              properties:
+                sectorId: { type: string, format: uuid }
+                prefix: { type: string, example: "P-A-" }
+                start: { type: integer, example: 1 }
+                end: { type: integer, example: 100 }
+      responses:
+        "201":
+          description: Lote criado
+        "409":
+          description: Código do intervalo já existe; nada foi criado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+  /api/spots/suggest:
+    get:
+      operationId: suggestSpot
+      parameters:
+        - in: query
+          name: vehicleType
+          required: true
+          schema: { $ref: "#/components/schemas/VehicleType" }
+        - in: query
+          name: sectorId
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Spot" }
+        "404":
+          description: Sem vaga compatível livre
+  /api/spots/{id}:
+    put:
+      operationId: updateSpot
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SpotWrite" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Spot" }
+        "409":
+          description: Vaga ocupada não vai para bloqueada/manutenção
+  /api/tariffs:
+    get:
+      operationId: listTariffs
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/TariffTable" }
+    post:
+      operationId: createTariff
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TariffWrite" }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TariffTable" }
+        "409":
+          description: Conflito de abrangência e vigência
+  /api/tariffs/{id}:
+    put:
+      operationId: updateTariff
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TariffWrite" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TariffTable" }
+        "409":
+          $ref: "#/components/responses/Error"
+  /api/tariffs/{id}/deactivate:
+    post:
+      operationId: deactivateTariff
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204": { description: Inativada }
+  /api/operations/dashboard:
+    get:
+      operationId: getDashboard
+      summary: Totais do painel e lista de estacionados
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Dashboard" }
+  /api/stays:
+    post:
+      operationId: registerEntry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plate, vehicleType, sectorId, spotId]
+              properties:
+                plate: { type: string }
+                vehicleType: { $ref: "#/components/schemas/VehicleType" }
+                sectorId: { type: string, format: uuid }
+                spotId: { type: string, format: uuid }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Stay" }
+        "400":
+          description: Placa inválida, tipo incompatível ou sem tarifa
+        "409":
+          description: Placa já estacionada ou vaga não livre
+    get:
+      operationId: listStayHistory
+      parameters:
+        - in: query
+          name: from
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          schema: { type: string, format: date }
+        - in: query
+          name: plate
+          schema: { type: string }
+        - in: query
+          name: sectorId
+          schema: { type: string, format: uuid }
+        - in: query
+          name: spotId
+          schema: { type: string, format: uuid }
+        - in: query
+          name: vehicleType
+          schema: { $ref: "#/components/schemas/VehicleType" }
+        - in: query
+          name: paymentMethod
+          schema: { $ref: "#/components/schemas/PaymentMethod" }
+        - in: query
+          name: operatorUserId
+          schema: { type: string, format: uuid }
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [Active, Completed, Cancelled]
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Stay" }
+  /api/stays/{id}/exit-preview:
+    get:
+      operationId: previewExit
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExitPreview" }
+        "409":
+          description: Sem estadia ativa ou sem caixa aberto
+  /api/stays/{id}/exit:
+    post:
+      operationId: confirmExit
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [paymentMethod]
+              properties:
+                paymentMethod: { $ref: "#/components/schemas/PaymentMethod" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Stay" }
+        "409":
+          $ref: "#/components/responses/Error"
+  /api/stays/{id}/cancel:
+    post:
+      operationId: cancelStay
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string }
+      responses:
+        "204": { description: Cancelada; vaga livre }
+        "403":
+          $ref: "#/components/responses/Error"
+        "409":
+          description: Já paga ou não ativa
+  /api/stays/{id}/receipt:
+    get:
+      operationId: getReceipt
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Dados do comprovante (a UI imprime)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Stay" }
+  /api/cash/current:
+    get:
+      operationId: getCurrentCash
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashRegister" }
+        "404":
+          description: Nenhum caixa aberto
+  /api/cash:
+    post:
+      operationId: openCash
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [operationalDate, openingAmount]
+              properties:
+                operationalDate: { type: string, format: date }
+                openingAmount: { type: number, format: decimal }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashRegister" }
+        "409":
+          description: Já existe caixa aberto no sistema ou caixa desta data
+  /api/cash/{id}:
+    get:
+      operationId: getCash
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashRegister" }
+  /api/cash/{id}/close:
+    post:
+      operationId: closeCash
+      summary: Fecha o caixa aberto; qualquer operador ou admin; closedByUserId é o chamador
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [informedAmount]
+              properties:
+                informedAmount: { type: number, format: decimal }
+                notes: { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashRegister" }
+  /api/cash/{id}/reopen:
+    post:
+      operationId: reopenCash
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashRegister" }
+        "403":
+          $ref: "#/components/responses/Error"
+        "409":
+          description: Já existe outro caixa aberto
+  /api/cash/{id}/movements:
+    post:
+      operationId: addCashMovement
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, amount, reason]
+              properties:
+                type:
+                  type: string
+                  enum: [Bleed, Supply, Adjustment]
+                amount: { type: number, format: decimal }
+                reason: { type: string }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashMovement" }
+        "403":
+          $ref: "#/components/responses/Error"
+  /api/reports/cash:
+    get:
+      operationId: reportCash
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashReport" }
+        "403":
+          $ref: "#/components/responses/Error"
+  /api/reports/cash.pdf:
+    get:
+      operationId: reportCashPdf
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+  /api/reports/cash.csv:
+    get:
+      operationId: reportCashCsv
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          content:
+            text/csv:
+              schema: { type: string }
+  /api/reports/stays:
+    get:
+      operationId: reportStays
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StayReport" }
+        "403":
+          $ref: "#/components/responses/Error"
+  /api/reports/stays.pdf:
+    get:
+      operationId: reportStaysPdf
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+  /api/reports/stays.csv:
+    get:
+      operationId: reportStaysCsv
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          content:
+            text/csv:
+              schema: { type: string }
+  /api/audit:
+    get:
+      operationId: listAudit
+      parameters:
+        - in: query
+          name: from
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/AuditEvent" }
+        "403":
+          $ref: "#/components/responses/Error"
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: ParkingApp.Session
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+  responses:
+    Error:
+      description: Erro de autenticação, autorização ou regra
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string }
+        message: { type: string, description: pt-BR }
+    VehicleType:
+      type: string
+      enum: [Car, Motorcycle]
+    PaymentMethod:
+      type: string
+      enum: [Cash, Pix, DebitCard, CreditCard, Other]
+    CurrentUser:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        fullName: { type: string }
+        login: { type: string }
+        role: { type: string, enum: [Administrator, Operator] }
+    User:
+      allOf:
+        - $ref: "#/components/schemas/CurrentUser"
+        - type: object
+          properties:
+            status: { type: string, enum: [Active, Inactive] }
+            createdAt: { type: string, format: date-time }
+            lastAccessAt: { type: string, format: date-time, nullable: true }
+    UserWrite:
+      type: object
+      required: [fullName, login, role, status]
+      properties:
+        fullName: { type: string }
+        login: { type: string }
+        password: { type: string, description: obrigatório na criação }
+        role: { type: string, enum: [Administrator, Operator] }
+        status: { type: string, enum: [Active, Inactive] }
+    Sector:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        code: { type: string }
+        description: { type: string, nullable: true }
+        allowedCategories: { type: string, enum: [Car, Motorcycle, Both] }
+        status: { type: string, enum: [Active, Inactive] }
+    SectorWrite:
+      type: object
+      required: [name, code, allowedCategories, status]
+      properties:
+        name: { type: string }
+        code: { type: string }
+        description: { type: string }
+        allowedCategories: { type: string, enum: [Car, Motorcycle, Both] }
+        status: { type: string, enum: [Active, Inactive] }
+    Spot:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        code: { type: string }
+        sectorId: { type: string, format: uuid }
+        vehicleCategory: { $ref: "#/components/schemas/VehicleType" }
+        status: { type: string, enum: [Free, Occupied, Blocked, Maintenance] }
+    SpotWrite:
+      type: object
+      required: [code, sectorId, vehicleCategory, status]
+      properties:
+        code: { type: string }
+        sectorId: { type: string, format: uuid }
+        vehicleCategory: { $ref: "#/components/schemas/VehicleType" }
+        status: { type: string, enum: [Free, Blocked, Maintenance] }
+    TariffTable:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        vehicleType: { $ref: "#/components/schemas/VehicleType" }
+        sectorId: { type: string, format: uuid, nullable: true }
+        firstHourAmount: { type: number, format: decimal }
+        additionalHourAmount: { type: number, format: decimal }
+        effectiveFrom: { type: string, format: date }
+        effectiveTo: { type: string, format: date, nullable: true }
+        status: { type: string, enum: [Active, Inactive] }
+    TariffWrite:
+      type: object
+      required: [name, vehicleType, firstHourAmount, additionalHourAmount, effectiveFrom, status]
+      properties:
+        name: { type: string }
+        vehicleType: { $ref: "#/components/schemas/VehicleType" }
+        sectorId: { type: string, format: uuid, nullable: true }
+        firstHourAmount: { type: number, format: decimal }
+        additionalHourAmount: { type: number, format: decimal }
+        effectiveFrom: { type: string, format: date }
+        effectiveTo: { type: string, format: date, nullable: true }
+        status: { type: string, enum: [Active, Inactive] }
+    Stay:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        plate: { type: string }
+        vehicleType: { $ref: "#/components/schemas/VehicleType" }
+        sectorCode: { type: string }
+        sectorName: { type: string }
+        spotCode: { type: string }
+        tariffName: { type: string }
+        firstHourAmount: { type: number, format: decimal }
+        additionalHourAmount: { type: number, format: decimal }
+        entryAt: { type: string, format: date-time }
+        exitAt: { type: string, format: date-time, nullable: true }
+        durationMinutes: { type: integer, nullable: true }
+        amountCharged: { type: number, format: decimal, nullable: true }
+        paymentMethod: { $ref: "#/components/schemas/PaymentMethod" }
+        status: { type: string, enum: [Active, Completed, Cancelled] }
+        entryUserName: { type: string }
+        exitUserName: { type: string, nullable: true }
+    ExitPreview:
+      allOf:
+        - $ref: "#/components/schemas/Stay"
+        - type: object
+          properties:
+            proposedExitAt: { type: string, format: date-time }
+            proposedDurationMinutes: { type: integer }
+            proposedAmount: { type: number, format: decimal }
+    Dashboard:
+      type: object
+      properties:
+        totalSpots: { type: integer }
+        occupied: { type: integer }
+        free: { type: integer }
+        blocked: { type: integer }
+        maintenance: { type: integer }
+        occupancyRate: { type: number, format: decimal }
+        occupancyBySector:
+          type: array
+          items:
+            type: object
+            properties:
+              sectorCode: { type: string }
+              occupancyRate: { type: number, format: decimal }
+        cashOpen: { type: boolean }
+        cashOperationalDate: { type: string, format: date, nullable: true }
+        dayRevenue: { type: number, format: decimal }
+        parked:
+          type: array
+          items: { $ref: "#/components/schemas/Stay" }
+    CashMovement:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, enum: [ExitPayment, Bleed, Supply, Adjustment] }
+        amount: { type: number, format: decimal }
+        paymentMethod: { $ref: "#/components/schemas/PaymentMethod" }
+        reason: { type: string, nullable: true }
+        occurredAt: { type: string, format: date-time }
+        userName: { type: string }
+    CashRegister:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        operationalDate: { type: string, format: date }
+        status: { type: string, enum: [Open, Closed] }
+        openingAmount: { type: number, format: decimal }
+        expectedAmount: { type: number, format: decimal }
+        informedClosingAmount: { type: number, format: decimal, nullable: true }
+        difference: { type: number, format: decimal, nullable: true }
+        totalsByPaymentMethod:
+          type: object
+          additionalProperties: { type: number, format: decimal }
+        movements:
+          type: array
+          items: { $ref: "#/components/schemas/CashMovement" }
+        openedByName: { type: string }
+        closedByName: { type: string, nullable: true }
+    CashReport:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/CashRegister" }
+    StayReport:
+      type: object
+      properties:
+        stays:
+          type: array
+          items: { $ref: "#/components/schemas/Stay" }
+        entryCount: { type: integer }
+        exitCount: { type: integer }
+        currentlyParked: { type: integer }
+        totalRevenue: { type: number, format: decimal }
+        revenueByVehicleType:
+          type: object
+          additionalProperties: { type: number, format: decimal }
+        revenueBySector:
+          type: object
+          additionalProperties: { type: number, format: decimal }
+        averageStayMinutes: { type: number, format: decimal }
+        occupancyBySector:
+          type: object
+          additionalProperties: { type: number, format: decimal }
+    AuditEvent:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        occurredAt: { type: string, format: date-time }
+        userName: { type: string }
+        action: { type: string }
+        entityType: { type: string }
+        entityId: { type: string }
+        changedData: { type: object }
+security:
+  - cookieAuth: []

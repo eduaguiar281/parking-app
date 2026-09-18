@@ -8,4 +8,10 @@
     <AssemblyName>ParkingApp.Api</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.12" />
+    <PackageReference Include="QuestPDF" Version="2026.9.0" />
+  </ItemGroup>
+
 </Project>
