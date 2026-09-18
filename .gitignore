@@ -11,6 +11,9 @@ Thumbs.db
 
 backend/**/bin/
 backend/**/obj/
+backend/parking.db
+backend/*.db-shm
+backend/*.db-wal
 backend/**/TestResults/
 backend/tests/coverage.cobertura.xml
 backend/tests/coverage.json
